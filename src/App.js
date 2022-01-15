@@ -80,21 +80,23 @@ function App() {
     
   }
 
-  // function onChecked (id,checked) {
-  //   // взять айди и по нему найти объект и поменять у объекта значение чект, сохранить todoitem
-  //   var checkeditem = checked;
-  //   var checkedidItems = currenTodoItems.filter(function(search){
-  //     return (search.checked == checkeditem)
-  //   })
-
-  // }
+  function onChecked(id, checked) {
+    // взять айди и по нему найти объект и поменять у объекта значение чект, сохранить в todoitem
+    for (var i = 0; i < currenTodoItems.length; i++) {
+      if (id === currenTodoItems[i].id) {
+        currenTodoItems[i].checked = checked;
+          
+      }
+    }
+    savedCurrenTodoItems(currenTodoItems)
+  }
 
   // переменная массив listItems вызывает метод .map который создает новый массив данных на основе currenTodoItems
   // функция  с параметром t (будет автоматически присваиваться каждому элементу массива)
 
   var listItems = currenTodoItems.map(function (t) {
     // вызывает компонент TodoItem key={t.id} - по умолчанию 
-    return (<TodoItem key={t.id} id={t.id} text={t.text} checked={t.checked} onDelete={onDelete}/>)
+    return (<TodoItem key={t.id} id={t.id} text={t.text} checked={t.checked} onDelete={onDelete} onChecked={onChecked} abc="vova"/>)
 
   });
 
@@ -110,7 +112,7 @@ function App() {
 
       </ul>
 
-      <TodoForm onAdd={onAdd} />
+      <TodoForm onAdd={onAdd}  />
 
     </div>
   );

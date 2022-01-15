@@ -8,7 +8,7 @@ function TodoItem(props) {
 
     function onChange(event){
         props.onChecked(props.id, event.target.checked)
-        
+    // проперти onChecked объекта props
     }
    
     return (
