@@ -100,7 +100,7 @@ function App() {
 
   });
 
-
+  var todoForm = (<TodoForm onAdd={onAdd} />);
 
   // рендерим компонент <TodoForm> с пропсом onAdd со значением функция onAdd
 
@@ -111,8 +111,8 @@ function App() {
         {listItems}
 
       </ul>
-
-      <TodoForm onAdd={onAdd}  />
+      {todoForm}
+      
 
     </div>
   );
