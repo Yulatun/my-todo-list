@@ -19,7 +19,8 @@ li {
   width: 300px;
   height: 50px;
   display:flex;
-  align-items:center;   
+  align-items:center;
+  justify-content: flex-start;
 }
 
 label {
@@ -44,10 +45,20 @@ height: 40px;
 
 }
 
-.material-icons {
-  margin-left: auto;
+
+.edit {
+  display:flex;
 }
 
+
+.todotext{
+  flex-grow:1;
+}
+
+
+.material-icons{
+  cursor: pointer;
+}
 
 .container {
   position:relative;

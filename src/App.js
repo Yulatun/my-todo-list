@@ -14,9 +14,9 @@ function getTodo() {
   var saveTodoItemsFromLocalStorage = localStorage.getItem('SAVED_TODO_ITEMS')
   
   var restoredSavedArray = saveTodoItemsFromLocalStorage ? JSON.parse(saveTodoItemsFromLocalStorage) : [
-    { id: "1", text: "eat", checked: true },
-    { id: "2", text: "sleep", checked: false },
-    { id: "3", text: "eat", checked: false }
+    { id: "1", text: "eat", checked: true, edit: false },
+    { id: "2", text: "sleep", checked: false, edit: false },
+    { id: "3", text: "eat", checked: false, edit: false }
   ];
   return restoredSavedArray 
 }
@@ -41,6 +41,7 @@ function App() {
     saveTodo(array)
   }
 
+  
   function onAdd(a) {
     // сравнить текущий текст с тем, что уже написан
     //если текст новый - то добавить его, 
@@ -55,9 +56,8 @@ function App() {
     }
 
     if (preventDublicate) {
-      currenTodoItems.push({ id: a, text: a, checked: false })
-      var currentArray = [...currenTodoItems]
-      savedCurrenTodoItems(currentArray)
+      currenTodoItems.push({ id: a, text: a, checked: false})
+      savedCurrenTodoItems([...currenTodoItems])
       
     }
     return preventDublicate
@@ -77,7 +77,6 @@ function App() {
     })
     // вызывается функция setCurrenTodoItems с параметром filtered
     savedCurrenTodoItems(filtered)
-    
   }
 
   function onChecked(id, checked) {
@@ -85,18 +84,29 @@ function App() {
     for (var i = 0; i < currenTodoItems.length; i++) {
       if (id === currenTodoItems[i].id) {
         currenTodoItems[i].checked = checked;
-          
       }
     }
-    savedCurrenTodoItems(currenTodoItems)
+    savedCurrenTodoItems([...currenTodoItems])
   }
+  
+  function onRenewTask(id,value){
+    for (var i = 0; i < currenTodoItems.length; i++) {
+      if (id === currenTodoItems[i].id) {
+        currenTodoItems[i].text = value;
+      }
+    }
+    savedCurrenTodoItems([...currenTodoItems])
+  }
+  
+
+  
 
   // переменная массив listItems вызывает метод .map который создает новый массив данных на основе currenTodoItems
   // функция  с параметром t (будет автоматически присваиваться каждому элементу массива)
 
   var listItems = currenTodoItems.map(function (t) {
     // вызывает компонент TodoItem key={t.id} - по умолчанию 
-    return (<TodoItem key={t.id} id={t.id} text={t.text} checked={t.checked} onDelete={onDelete} onChecked={onChecked} abc="vova"/>)
+    return (<TodoItem key={t.id} id={t.id} text={t.text} checked={t.checked} onDelete={onDelete} onChecked={onChecked} edit={onRenewTask}/>)
 
   });
 
@@ -112,8 +122,6 @@ function App() {
 
       </ul>
       {todoForm}
-      
-
     </div>
   );
 }

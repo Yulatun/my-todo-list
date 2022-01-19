@@ -14,8 +14,7 @@ function TodoForm(props) {
 
     // функция работает при нажатии и присваивает пропсу функцию onAdd с параметром (newTask) ! ОТКУДА Я ВЗЯЛА props И ДЛЯ ЧЕГО 
     // (может быть это как портал между компонентами) 
-    function onClick(event) {
-        debugger;
+    function onClick() {
         
         if (!props.onAdd(newTask)) {
             setError('такая задача уже есть')
@@ -28,6 +27,7 @@ function TodoForm(props) {
     
     function onChange(event) {
         setNewTask(event.target.value)
+       
     // if(event.target.value != предыдущие вписанные такски){
     // setError('такая задача уже существует')
     //    
