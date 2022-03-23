@@ -1,93 +1,63 @@
-import logo from './logo.svg';
+import 'antd/dist/antd.css';
 import './App.css';
 import TodoForm from './TodoForm';
 import TodoItem from './TodoItem';
 import React, { useState } from 'react';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd'
+import { List, Divider, PageHeader } from 'antd';
 
-import {DragDropContext, Droppable} from 'react-beautiful-dnd'
-import { renderIntoDocument } from 'react-dom/cjs/react-dom-test-utils.production.min';
-
-//функция, которая делает наше приложение
 
 function saveTodo(array) {
   localStorage.setItem('SAVED_TODO_ITEMS', JSON.stringify(array));
 }
 
 function getTodo() {
-  var saveTodoItemsFromLocalStorage = localStorage.getItem('SAVED_TODO_ITEMS')
+  let saveTodoItemsFromLocalStorage = localStorage.getItem('SAVED_TODO_ITEMS')
 
-  var restoredSavedArray = saveTodoItemsFromLocalStorage ? JSON.parse(saveTodoItemsFromLocalStorage) : [
-    { id: "1", text: "eat", checked: true, edit: false },
-    { id: "2", text: "sleep", checked: false, edit: false },
-    { id: "3", text: "eat", checked: false, edit: false }
+  let restoredSavedArray = saveTodoItemsFromLocalStorage ? JSON.parse(saveTodoItemsFromLocalStorage) : [
+    { id: "1", text: "eat", checked: true, priority: false },
+    { id: "2", text: "sleep", checked: false, priority: false },
+    { id: "3", text: "eat", checked: false, priority: false }
+    // do I need theese ids? 
   ];
-
   return restoredSavedArray
 }
 
 function App() {
+  let [currenTodoItems, setCurrenTodoItems] = useState(getTodo());
 
-  
-  // array - измененный массив currenTodoItems
-
-  //объявляю переменную currenTodoItems она является массивом данных состоящим из объектов. Объекты имеют id и проперти: text, checked
-  // setCurrenTodoItems -  функция меняющая состояние currenTodoItems, useState сохраняет состояние currenTodoItems
-  var [currenTodoItems, setCurrenTodoItems] = useState(getTodo());
-
-  // for (var=i;)
-  // console.log(currenTodoItems[].text)
-
-  // функция с параметром а вызывает .push метод, который добавляет новый элемент {объект с id и проперти text, checked } в конец массива 
-  //currenTodoItems !! А ЭТО ПАРАМЕТР ОТКУДА ОН БЕРЕТСЯ И КАК ПЕРЕДАЕТСЯ (потому что a это пропс через который React 
-  // собирал все JSX-атрибуты и дочерние элементы в один объект а и передал их в параметр) КАК ОН ПОНЯЛ ЧТО НУЖНО ИММЕННО ЭТИ ДАННЫЕ ПЕРЕДАТЬ
-
-  // Если добавилось успешно - возвращается true, если нет - false
   function savedCurrenTodoItems(array) {
     setCurrenTodoItems(array)
     saveTodo(array)
   }
 
 
-  function onAdd(a) {
-    // сравнить текущий текст с тем, что уже написан
-    //если текст новый - то добавить его, 
-    //если у текста есть дубликат выдать ошибку
-    var preventDublicate = true
-
-    for (var i = 0; i < currenTodoItems.length; i++) {
-      if (currenTodoItems[i].text === a) {
+  function onAdd(newtask) {
+    let preventDublicate = true
+    for (let i = 0; i < currenTodoItems.length; i++) {
+      if (currenTodoItems[i].text === newtask) {
         preventDublicate = false
         break
       }
     }
 
     if (preventDublicate) {
-      currenTodoItems.push({ id: a, text: a, checked: false })
+      currenTodoItems.push({ id: newtask, text: newtask, checked: false })
       savedCurrenTodoItems([...currenTodoItems])
-
     }
     return preventDublicate
   }
 
 
-  // setCurrenTodoItems рендерит (отрисовывает) измененный массив currenTodoItems с новым элементом
-  //   setCurrenTodoItems([...currenTodoItems])
-  //Когда мы добавляем новый элемент в массив { id: a, text: a, checked: false }, setCurrenTodoItems отрисовывает новый массив 
-  // без элемента с одинаковыми text: a,
-  // функция с параметром id вызывает переменную filtered которая является методом .filter. Он создает новый массив со всеми данными 
-  // прошедшими критерий фильтра. 
   function onDelete(id) {
-    var filtered = currenTodoItems.filter(function (lapochka) {
-      //Фильтр: это фунция с параметром лапочка вызывает сравнение  id параметра функции lapochka и id функции onDelete
-      return lapochka.id !== id;
+    let filtered = currenTodoItems.filter((deletetask) => {
+      return deletetask.id !== id;
     })
-    // вызывается функция setCurrenTodoItems с параметром filtered
     savedCurrenTodoItems(filtered)
   }
 
   function onChecked(id, checked) {
-    // взять айди и по нему найти объект и поменять у объекта значение чект, сохранить в todoitem
-    for (var i = 0; i < currenTodoItems.length; i++) {
+    for (let i = 0; i < currenTodoItems.length; i++) {
       if (id === currenTodoItems[i].id) {
         currenTodoItems[i].checked = checked;
       }
@@ -96,7 +66,7 @@ function App() {
   }
 
   function onRenewTask(id, value) {
-    for (var i = 0; i < currenTodoItems.length; i++) {
+    for (let i = 0; i < currenTodoItems.length; i++) {
       if (id === currenTodoItems[i].id) {
         currenTodoItems[i].text = value;
       }
@@ -104,91 +74,64 @@ function App() {
     savedCurrenTodoItems([...currenTodoItems])
   }
 
-// onDragEnd - update state 
-  var onDragEnd = result => {
-    const { destination, source, draggableId } = result;
 
+  let onDragEnd = result => {
+    const { destination, source } = result;
     if (!destination) {
       return;
     }
-
     if (destination.droppableId === source.droppableId &&
-        destination.index === source.index
-      ) {
-        return;
-      }
+      destination.index === source.index) {
+      return;
+    }
 
+    let draggedTodoItem = currenTodoItems[source.index]
+    currenTodoItems.splice(source.index, 1)
+    let removedTodoItems = currenTodoItems.splice(destination.index, currenTodoItems.length)
 
-      var startTodoItem = currenTodoItems[source.index]
-
-      currenTodoItems.splice(source.index,1)
-      
-      var removedTodoItems = currenTodoItems.splice(destination.index,currenTodoItems.length)
-         
-
-      
-     // currenTodoItems[source.index] = finalindexTodoitem
-      savedCurrenTodoItems ([...currenTodoItems, startTodoItem, ...removedTodoItems])
-   
-      
-      //console.log(currenTodoItems[i])
-      // () {
-      //   for (var i = 0; i < currenTodoItems.length; i++){
-      //   dragcurrenTodoItems.index = finalindexTodoitem
-      //   }
-      //   savedCurrenTodoItems([...currenTodoItems])
-      // }
-    
-
-   
-
-
-      // 
-      //savedCurrenTodoItems([...currenTodoItems])
-      // const column = setcurrentColumn[source.droppableId]
-      // const NewTaskIds = array.from(column.taskIds)
-      // NewTaskIds.splice(source.index, 1)
-      // NewTaskIds.splice(destination.index, 0, draggableId)
-      
-      // const newColumn = {
-      //   ...column,
-      //   taskIds: NewTaskIds,
-      // }
-
+    savedCurrenTodoItems([...currenTodoItems, draggedTodoItem, ...removedTodoItems])
   };
- 
- 
 
- 
- 
 
-  // переменная массив listItems вызывает метод .map который создает новый массив данных на основе currenTodoItems
-  // функция  с параметром t (будет автоматически присваиваться каждому элементу массива)
+  function onPrioritize(id, priority) {
+    for (let i = 0; i < currenTodoItems.length; i++) {
+      if (id === currenTodoItems[i].id) {
+        currenTodoItems[i].priority = priority;
+      }
+    }
+    currenTodoItems.sort((a, b) => {
+      return Number(b.priority || false) - Number(a.priority || false);
+    })
+    savedCurrenTodoItems([...currenTodoItems])
+// What is a and b here?
+  }
 
-  // анонимная функция function(t,index)
-  var listItems = currenTodoItems.map(function(t, index) {
-    // вызывает компонент TodoItem key={t.id} - по умолчанию 
-    return (<TodoItem key={t.id} id={t.id} index={index} text={t.text} checked={t.checked} onDelete={onDelete} onChecked={onChecked} edit={onRenewTask} />)
 
+  let listItems = currenTodoItems.map((task, index) => {
+    return (<TodoItem key={task.id} id={task.id} index={index} text={task.text} checked={task.checked} priority={task.priority} 
+      onDelete={onDelete} onChecked={onChecked} edit={onRenewTask} onPriority={onPrioritize} />)
   });
 
-  var todoForm = (<TodoForm onAdd={onAdd} />);
+  let todoForm = (<TodoForm onAdd={onAdd} />);
 
-  // рендерим компонент <TodoForm> с пропсом onAdd со значением функция onAdd
 
   return (
     <div className="App">
-      <h1>Todolist</h1>
+      <PageHeader style={{ fontSize: '200%', color: "#FDAC53" }} className="header"> Todolist </PageHeader>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="droppable">
           {provided => (
-            
-        <ul {...provided.droppableProps}
+
+            <div {...provided.droppableProps}
               ref={provided.innerRef}>
-          
-          {listItems}
-          {provided.placeholder}
-        </ul>)}
+              <Divider orientation="left"></Divider>
+              <List>
+                {listItems}
+                {provided.placeholder}
+              </List>
+            </div>
+          )}
+
         </Droppable>
       </DragDropContext>
       {todoForm}
@@ -197,10 +140,3 @@ function App() {
 }
 
 export default App;
-
-
-
-
-// var restoredTodoList = JSON.parse(localStorage.getItem('saveTodoList'));
-
-// console.log(restoredTodoList)

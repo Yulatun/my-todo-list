@@ -1,54 +1,43 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState,  } from 'react';
+import './TodoForm.css';
+import { Button, Input } from 'antd'
 
 
-//вызывает компонент TodoForm с параметрами props
-// {onAdd: }
 function TodoForm(props) {
-    // используем хук useState newTask - текущее состояние массива, setNewTask функция которая изменяет массив, useState - 
-    // хранит состояние newTask
-    var [newTask, setNewTask] = useState('');
+    let [newTask, setNewTask] = useState('');
     const [disable, setDisable] = useState(true);
-    var [error, setError] = useState('')
+    let [error, setError] = useState('')
 
-    
-
-    // функция работает при нажатии и присваивает пропсу функцию onAdd с параметром (newTask) ! ОТКУДА Я ВЗЯЛА props И ДЛЯ ЧЕГО 
-    // (может быть это как портал между компонентами) 
     function onClick() {
-        
         if (!props.onAdd(newTask)) {
             setError('такая задача уже есть')
             setDisable(true)
         }
         setNewTask('')
-        
     }
 
     
     function onChange(event) {
         setNewTask(event.target.value)
-       
-    // if(event.target.value != предыдущие вписанные такски){
-    // setError('такая задача уже существует')
-    //    
-     // }
-      //setDisable(event.target.value === '');
        if(event.target.value.length < 3){
-        setError('караул мало букв')
+        setError('слишком короткая задача')
         setDisable(true)
        }else{
-        setError('все супер')
+        setError('')
         setDisable(false)
        }
     }
 
 
     return (
-        <form>
-            <div style={{color:'red'}}>{(error)}</div>
-            <textarea placeholder="your new task" onChange={onChange} value={newTask}  ></textarea>
-            <button onClick={onClick} type="button" disabled={disable}> Add</button>
-        </form>
+        <div>
+            <div className= "error">{error}</div>
+            <form className="form">
+                <Input  className="textareaForm" placeholder="your new task" onChange={onChange} value={newTask}></Input>
+                <Button className="button" onClick={onClick} type="primary" disabled={disable}> Add</Button>
+            </form>
+        
+        </div>
     );
 };
 
