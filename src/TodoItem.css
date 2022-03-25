@@ -12,8 +12,14 @@ li {
   height: 40px;
 }
 
+.todotext {
+  padding: 0 20px;
+  flex: 1;
+}
+
 .edit {
   display:flex;
+  align-items: center;
 }
 
 .todotext{
@@ -30,6 +36,10 @@ input.noterror{
 input.error  {
   border-color:red;
 }
+
+input.error:focus {
+  border-color:red;
+}  
 .ant-checkbox-inner, .ant-checkbox-input {
   transform: scale(1.25)
 }
@@ -42,6 +52,14 @@ input.error  {
 
 .crossed-line{
     text-decoration: line-through;
+}
+
+.ant-list-item{
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.list-item-priority{
+  background-color: #ffd285;
 }
 
 

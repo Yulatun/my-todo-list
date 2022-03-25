@@ -7,7 +7,6 @@ body  {
   text-align: center ;
 }
 
-
-.crossed-line{
-    text-decoration: line-through;
+.list-items-container {
+  border-top: 1px solid #f0f0f0;
 }

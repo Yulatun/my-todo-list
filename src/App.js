@@ -125,9 +125,8 @@ function App() {
         <Droppable droppableId="droppable">
           {provided => (
 
-            <div {...provided.droppableProps}
+            <div className="list-items-container" {...provided.droppableProps}
               ref={provided.innerRef}>
-              <Divider orientation="left"></Divider>
               <List>
                 {listItems}
                 {provided.placeholder}
