@@ -54,13 +54,13 @@ function TodoItem(props) {
         if (edit) {
             return (
                 <div className="todotext">
-                    <Input type="text" className={`noterror ${error ? 'error' : ''}`} onChange={onChangecurrentItem} value={editTask}></Input>
+                    <Input type="text" className={`noterror ${error ? 'error' : ''}`} onChange={onChangecurrentItem} onChecked={onChange} ></Input>
                 </div>)
         } else {
             return (
-                <div className="todotext">
+                <div className="todotext" className={props.checked ? "crossed-line" : ""} >
                     <Typography.Text >
-                    {props.text}
+                    {props.text} {props.checked}
                     </Typography.Text>
                 </div>)
         }
@@ -68,9 +68,18 @@ function TodoItem(props) {
 
     function renderPriority () {
         if(props.priority) {
-            return(<FireFilled onClick={() => Prioritize(false)} style={{ fontSize: '150%', color: "#9BB7D4"}}/>)
+            return (
+            <>
+            <FireFilled onClick={() => Prioritize(false)} style={{ fontSize: '150%', color: "#9BB7D4"}}/>
+            <List.Item prefixCls="no-style-list" ></List.Item>
+            </>)
         } else {
-            return(<FireOutlined onClick={() => Prioritize(true)} style={{ fontSize: '150%', color: "#9BB7D4"}}/>)
+            return(
+            <>
+            <FireOutlined onClick={() => Prioritize(true)} style={{ fontSize: '150%', color: "#9BB7D4"}}/>
+            <List.Item background-color="9BB7D4"></List.Item>
+            {/* <List.Item prefixCls="no-style-list"></List.Item> */}
+            </>)
         }
     }
 
@@ -103,7 +112,7 @@ function TodoItem(props) {
                 <div className="ant-list-item" {...provided.draggableProps}
                     {...provided.dragHandleProps}
                     ref={provided.innerRef}>
-                    <List.Item prefixCls="no-style-list">
+                    {/* <List.Item prefixCls="no-style-list"> */}
                         <Checkbox onChange={onChange} defaultChecked={props.checked} >
                         </Checkbox>
                         
@@ -114,7 +123,7 @@ function TodoItem(props) {
                                 
                             </div>
                        
-                    </List.Item>
+                    {/* </List.Item> */}
                 </div>
                 
             )}

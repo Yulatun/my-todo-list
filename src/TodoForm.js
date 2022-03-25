@@ -33,7 +33,7 @@ function TodoForm(props) {
         <div>
             <div className= "error">{error}</div>
             <form className="form">
-                <Input  className="textareaForm" placeholder="your new task" onChange={onChange} value={newTask}></Input>
+                <Input className="textareaForm" placeholder="your new task" onChange={onChange} value={newTask}></Input>
                 <Button className="button" onClick={onClick} type="primary" disabled={disable}> Add</Button>
             </form>
         

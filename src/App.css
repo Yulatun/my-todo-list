@@ -6,3 +6,8 @@ body  {
  
   text-align: center ;
 }
+
+
+.crossed-line{
+    text-decoration: line-through;
+}

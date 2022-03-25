@@ -6,72 +6,73 @@ import React, { useState } from 'react';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import { List, Divider, PageHeader } from 'antd';
 
+const KEY_TODO_ITEMS = 'SAVED_TODO_ITEMS';
 
-function saveTodo(array) {
-  localStorage.setItem('SAVED_TODO_ITEMS', JSON.stringify(array));
+function saveTodoInLocalStorage(array) {
+  localStorage.setItem(KEY_TODO_ITEMS, JSON.stringify(array));
 }
 
 function getTodo() {
-  let saveTodoItemsFromLocalStorage = localStorage.getItem('SAVED_TODO_ITEMS')
+  let savedTodoItemsFromLocalStorage = localStorage.getItem(KEY_TODO_ITEMS);
 
-  let restoredSavedArray = saveTodoItemsFromLocalStorage ? JSON.parse(saveTodoItemsFromLocalStorage) : [
+  let restoredSavedArray = savedTodoItemsFromLocalStorage ? JSON.parse(savedTodoItemsFromLocalStorage) : [
     { id: "1", text: "eat", checked: true, priority: false },
     { id: "2", text: "sleep", checked: false, priority: false },
-    { id: "3", text: "eat", checked: false, priority: false }
+    { id: "3", text: "eat", checked: false, priority: false },
     // do I need theese ids? 
   ];
-  return restoredSavedArray
+  return restoredSavedArray;
 }
 
 function App() {
-  let [currenTodoItems, setCurrenTodoItems] = useState(getTodo());
+  let [currentTodoItems, setCurrentTodoItems] = useState(getTodo());
 
-  function savedCurrenTodoItems(array) {
-    setCurrenTodoItems(array)
-    saveTodo(array)
+  function saveCurrentTodoItems(array) {
+    array = [...array];
+    setCurrentTodoItems(array);
+    saveTodoInLocalStorage(array);
   }
 
-
-  function onAdd(newtask) {
-    let preventDublicate = true
-    for (let i = 0; i < currenTodoItems.length; i++) {
-      if (currenTodoItems[i].text === newtask) {
-        preventDublicate = false
-        break
+  function onAdd(newTask) {
+    let isNotDuplicate = true;
+    for (let i = 0; i < currentTodoItems.length; i++) {
+      if (currentTodoItems[i].text === newTask) {
+        isNotDuplicate = false;
+        break;
       }
     }
 
-    if (preventDublicate) {
-      currenTodoItems.push({ id: newtask, text: newtask, checked: false })
-      savedCurrenTodoItems([...currenTodoItems])
+    if (isNotDuplicate) {
+      currentTodoItems.push({ id: newTask, text: newTask, checked: false });
+      saveCurrentTodoItems(currentTodoItems);
     }
-    return preventDublicate
+    return isNotDuplicate;
   }
 
 
   function onDelete(id) {
-    let filtered = currenTodoItems.filter((deletetask) => {
-      return deletetask.id !== id;
-    })
-    savedCurrenTodoItems(filtered)
+    let filtered = currentTodoItems.filter((task) => {
+      return task.id !== id;
+    });
+    saveCurrentTodoItems(filtered);
   }
 
   function onChecked(id, checked) {
-    for (let i = 0; i < currenTodoItems.length; i++) {
-      if (id === currenTodoItems[i].id) {
-        currenTodoItems[i].checked = checked;
+    for (let i = 0; i < currentTodoItems.length; i++) {
+      if (id === currentTodoItems[i].id) {
+        currentTodoItems[i].checked = checked;
       }
     }
-    savedCurrenTodoItems([...currenTodoItems])
+    saveCurrentTodoItems(currentTodoItems);
   }
 
   function onRenewTask(id, value) {
-    for (let i = 0; i < currenTodoItems.length; i++) {
-      if (id === currenTodoItems[i].id) {
-        currenTodoItems[i].text = value;
+    for (let i = 0; i < currentTodoItems.length; i++) {
+      if (id === currentTodoItems[i].id) {
+        currentTodoItems[i].text = value;
       }
     }
-    savedCurrenTodoItems([...currenTodoItems])
+    saveCurrentTodoItems(currentTodoItems);
   }
 
 
@@ -85,31 +86,33 @@ function App() {
       return;
     }
 
-    let draggedTodoItem = currenTodoItems[source.index]
-    currenTodoItems.splice(source.index, 1)
-    let removedTodoItems = currenTodoItems.splice(destination.index, currenTodoItems.length)
+    let draggedTodoItem = currentTodoItems[source.index]
+    currentTodoItems.splice(source.index, 1)
+    let removedTodoItems = currentTodoItems.splice(destination.index, currentTodoItems.length)
 
-    savedCurrenTodoItems([...currenTodoItems, draggedTodoItem, ...removedTodoItems])
+    saveCurrentTodoItems([...currentTodoItems, draggedTodoItem, ...removedTodoItems])
   };
 
 
   function onPrioritize(id, priority) {
-    for (let i = 0; i < currenTodoItems.length; i++) {
-      if (id === currenTodoItems[i].id) {
-        currenTodoItems[i].priority = priority;
+    for (let i = 0; i < currentTodoItems.length; i++) {
+      if (id === currentTodoItems[i].id) {
+        currentTodoItems[i].priority = priority;
       }
     }
-    currenTodoItems.sort((a, b) => {
+    currentTodoItems.sort((a, b) => {
       return Number(b.priority || false) - Number(a.priority || false);
     })
-    savedCurrenTodoItems([...currenTodoItems])
+    saveCurrentTodoItems(currentTodoItems);
 // What is a and b here?
   }
 
 
-  let listItems = currenTodoItems.map((task, index) => {
-    return (<TodoItem key={task.id} id={task.id} index={index} text={task.text} checked={task.checked} priority={task.priority} 
+  let listItems = currentTodoItems.map((task, index) => {
+    return (<TodoItem key={task.id} id={task.id} index={index} text={task.text} checked={task.checked}  priority={task.priority} 
       onDelete={onDelete} onChecked={onChecked} edit={onRenewTask} onPriority={onPrioritize} />)
+
+      
   });
 
   let todoForm = (<TodoForm onAdd={onAdd} />);
@@ -117,7 +120,7 @@ function App() {
 
   return (
     <div className="App">
-      <PageHeader style={{ fontSize: '200%', color: "#FDAC53" }} className="header"> Todolist </PageHeader>
+      <PageHeader style={{ fontSize: '200%' }} className="header"> Todolist </PageHeader>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="droppable">
           {provided => (
