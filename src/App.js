@@ -19,7 +19,7 @@ function getTodo() {
     { id: "1", text: "eat", checked: true, priority: false },
     { id: "2", text: "sleep", checked: false, priority: false },
     { id: "3", text: "eat", checked: false, priority: false },
-    // do I need theese ids? 
+    
   ];
   return restoredSavedArray;
 }
@@ -104,7 +104,7 @@ function App() {
       return Number(b.priority || false) - Number(a.priority || false);
     })
     saveCurrentTodoItems(currentTodoItems);
-// What is a and b here?
+
   }
 
 
