@@ -14,6 +14,7 @@ function TodoItem(props) {
         props.onDelete(props.id)
     }
 
+
     function onChange(event) {
         props.onChecked(props.id, event.target.checked)
     }
@@ -86,7 +87,6 @@ function TodoItem(props) {
         if (edit) {
             return (
                 <>
-                    
                     <CheckOutlined onClick={onEditSave} style={{ fontSize: '150%', color: "#E0B589"}}  > </CheckOutlined>
                     <CloseSquareOutlined onClick={cancelEdit} style={{ fontSize: '150%', color: "#E0B589"}} ></CloseSquareOutlined>
                 </>)

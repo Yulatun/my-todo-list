@@ -4,33 +4,25 @@ import TodoForm from './TodoForm';
 import TodoItem from './TodoItem';
 import React, { useState } from 'react';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
-import { List, Divider, PageHeader } from 'antd';
+import { List, PageHeader } from 'antd';
+import { getTodoItems, saveTodoItems }  from './server'
 
-const KEY_TODO_ITEMS = 'SAVED_TODO_ITEMS';
-
-function saveTodoInLocalStorage(array) {
-  localStorage.setItem(KEY_TODO_ITEMS, JSON.stringify(array));
-}
-
-function getTodo() {
-  let savedTodoItemsFromLocalStorage = localStorage.getItem(KEY_TODO_ITEMS);
-
-  let restoredSavedArray = savedTodoItemsFromLocalStorage ? JSON.parse(savedTodoItemsFromLocalStorage) : [
-    { id: "1", text: "eat", checked: true, priority: false },
-    { id: "2", text: "sleep", checked: false, priority: false },
-    { id: "3", text: "eat", checked: false, priority: false },
-    
-  ];
-  return restoredSavedArray;
-}
 
 function App() {
-  let [currentTodoItems, setCurrentTodoItems] = useState(getTodo());
+  let [currentTodoItems, setCurrentTodoItems] = useState(undefined);
+
+  if (currentTodoItems === undefined){
+    getTodoItems() 
+      .then((itemsFromServer)=>{
+        saveCurrentTodoItems(itemsFromServer)
+      });
+    currentTodoItems = [];
+  }
 
   function saveCurrentTodoItems(array) {
     array = [...array];
     setCurrentTodoItems(array);
-    saveTodoInLocalStorage(array);
+    // saveTodoInLocalStorage(array);
   }
 
   function onAdd(newTask) {
@@ -43,8 +35,12 @@ function App() {
     }
 
     if (isNotDuplicate) {
-      currentTodoItems.push({ id: newTask, text: newTask, checked: false });
-      saveCurrentTodoItems(currentTodoItems);
+      saveTodoItems({ text: newTask, checked: false, priority:false })
+        .then((itemFromServer)=>{
+          currentTodoItems.push(itemFromServer)
+          saveCurrentTodoItems(currentTodoItems)
+        });
+        
     }
     return isNotDuplicate;
   }
@@ -109,10 +105,8 @@ function App() {
 
 
   let listItems = currentTodoItems.map((task, index) => {
-    return (<TodoItem key={task.id} id={task.id} index={index} text={task.text} checked={task.checked}  priority={task.priority} 
-      onDelete={onDelete} onChecked={onChecked} edit={onRenewTask} onPriority={onPrioritize} />)
-
-      
+    return (<TodoItem key={task._id} id={task._id} index={index} text={task.text} checked={task.checked} priority={task.priority} 
+      onDelete={onDelete} onChecked={onChecked} edit={onRenewTask} onPriority={onPrioritize} />)  
   });
 
   let todoForm = (<TodoForm onAdd={onAdd} />);
