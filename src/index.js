@@ -3,11 +3,16 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-
+import { LoadingOutlined } from '@ant-design/icons'
 
 ReactDOM.render(
   <React.StrictMode>
+
     <App />
+    {/* <div id="coverScreen"  className="loader">
+    <LoadingOutlined/>
+    </div> */}
+      
   </React.StrictMode>,
   document.getElementById('root')
 );

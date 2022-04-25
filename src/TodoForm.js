@@ -7,20 +7,22 @@ function TodoForm(props) {
     let [newTask, setNewTask] = useState('');
     const [disable, setDisable] = useState(true);
     let [error, setError] = useState('')
+    
 
     function onClick() {
         if (!props.onAdd(newTask)) {
-            setError('такая задача уже есть')
+            setError('the task exist')
             setDisable(true)
         }
         setNewTask('')
     }
 
     
+    
     function onChange(event) {
         setNewTask(event.target.value)
        if(event.target.value.length < 3){
-        setError('слишком короткая задача')
+        setError('too short')
         setDisable(true)
        }else{
         setError('')

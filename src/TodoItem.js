@@ -2,7 +2,7 @@ import { React, useState, } from "react";
 import { Draggable } from 'react-beautiful-dnd';
 import './TodoItem.css';
 import { Checkbox, Input, List, Typography} from 'antd';
-import { DeleteFilled, EditFilled, CloseSquareOutlined, CheckOutlined, FireOutlined,FireFilled } from '@ant-design/icons'
+import { DeleteFilled, EditFilled, CloseSquareOutlined, CheckOutlined, FireOutlined,FireFilled, LoadingOutlined } from '@ant-design/icons'
 
 
 function TodoItem(props) {
@@ -48,6 +48,7 @@ function TodoItem(props) {
     function Prioritize (newPriority) {
         props.onPriority(props.id, newPriority)
     }
+
 
 
     function renderText() {
@@ -121,6 +122,7 @@ function TodoItem(props) {
                             </div>
                        
                     </List.Item>
+                    
                 </div>
                 
             )}
